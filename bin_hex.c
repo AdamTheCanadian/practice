@@ -110,17 +110,19 @@ void convert_binary() {
   uint64_t uint = 0;
   int64_t sint = 0;
 
+  /* For every character past the 0b (hence starting at 2) we need to check
+   * if the bit is enabled, compute the exponent (2^N) if it is, and accumulate
+   * into the final integer value */
   for (size_t i = 2; i < buf_len; i++) {
     size_t exp = buf_len - i - 1;
-    uint64_t s = 0;
     /* If the bit is 1, we need to compute 2^exp */
     if (buf[i] == '1') {
-      s = 1;
+      uint64_t sum = 1;
       for (size_t j = 0; j < exp; j++) {
-        s = s * 2;
+        sum = sum * 2;
       }
+      uint += sum;
     }
-    uint += s;
   }
   printf("Uint %lld\n", uint);
 }
