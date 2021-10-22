@@ -23,6 +23,11 @@ int validate_integer_input();
 
 void convert_binary();
 
+/* calculate 2 ^ n */
+int two_exp(int n);
+
+char hex_lookup[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
 int main(int argc, char* argv []) {
   /*
    * Want the ability to:
@@ -124,5 +129,65 @@ void convert_binary() {
       uint += sum;
     }
   }
-  printf("Uint %lld\n", uint);
+
+  /* Hexadecimal
+   * 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F
+   * Each 4 bits is one hexadecimal character
+   * So probably need to start at the back/end of the binary string
+   * and work to the front (right to left)
+   * A potential implementation is store all bits to hex in a table
+   * and compare them
+   * 4 bits == nibbles
+   */
+  char hex_str[128];
+  size_t hex_idx = 0;
+
+  int nibble_cnt = 1;
+  int s = 0;
+  for (size_t i = buf_len-1; i >= 2; i--) {
+    char bit = buf[i];
+    if (bit == '1') {
+      s += two_exp(nibble_cnt - 1);
+    }
+    /* Processed 4 bits, need to add the hex character and go to the next 4 bits */
+    if (nibble_cnt >= 4) {
+      hex_str[hex_idx] = hex_lookup[s];
+      hex_idx += 1;
+      nibble_cnt = 1;
+      s = 0;
+    }
+    else {
+      nibble_cnt += 1;
+    }
+  }
+  /* We may have had <4 bits to process so need to handle that corner case */
+  if (nibble_cnt > 1) {
+    hex_str[hex_idx] = hex_lookup[s];
+    hex_idx += 1;
+  }
+  printf("Binary %s is:\n", buf);
+  printf("\tDec: %lld\n", uint);
+  printf("\tHex: 0x");
+  for (size_t i = hex_idx - 1; i < hex_idx; i--) {
+    printf("%c", hex_str[i]);
+  }
+  printf("\n");
+  printf("Using printf hex 0x%X\n", uint);
+}
+
+int two_exp(int n) {
+  /*
+   * If n == 0
+   * 2 ^ 0 == 1 so this will work
+   *
+   * if n == 2
+   * s == 1
+   * s = s * 2 == 2
+   * s = s * 2 == 4
+   */
+  int s = 1;
+  for (int i = 0; i < n; i++) {
+    s = s * 2;
+  }
+  return s;
 }
