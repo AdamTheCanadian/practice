@@ -6,6 +6,15 @@
 char buf[256];
 size_t buf_len = 0;
 
+char hex_str[256];
+size_t hex_len = 0;
+
+/* Binary strings take up more space (8 characters extra) so make sure to account for that */
+char bin_str[256 * 8];
+size_t bin_len = 0;
+
+uint64_t unsigned_value = 0;
+int64_t signed_value = 0;
 
 typedef enum {
   Binary,
@@ -22,6 +31,7 @@ int validate_hexadecimal_input();
 int validate_integer_input();
 
 void convert_binary();
+void convert_hexadecimal();
 
 /* calculate 2 ^ n */
 int two_exp(int n);
@@ -52,12 +62,15 @@ int main(int argc, char* argv []) {
     if (validate_binary_input() == 0) {
       return 1;
     }
+    /* Dont copy the '0b' */
+    strncpy(bin_str, &buf[2], buf_len-2);
     convert_binary();
   }
   else if (input_type == Hexadecimal) {
     if (validate_hexadecimal_input() == 0) {
       return 1;
     }
+    convert_hexadecimal();
   }
   else if (input_type == Integer) {
     if (validate_integer_input() == 0) {
@@ -65,8 +78,14 @@ int main(int argc, char* argv []) {
     }
   }
   else {
-
+    return 0;
   }
+
+  /* Print the converted values */
+  printf("Input:       %s\n", buf);
+  printf("Binary:      0b%s\n", bin_str);
+  printf("Hexadecimal: 0x%s\n", hex_str);
+  printf("Unsigned:    %lld\n", unsigned_value);
 }
 
 InputType determine_input_type() {
@@ -103,7 +122,20 @@ int validate_binary_input() {
 }
 
 int validate_hexadecimal_input() {
-
+  if (buf[0] != '0' && buf[1] != 'x') {
+    return 0;
+  }
+  for (size_t i = 2; i < buf_len; i++) {
+    /* Valid hex ASCII characters are '0' to '9', 'a' to 'f', and 'A' to 'F' */
+    if (buf[i] >= '0' && buf[i] <= '9' ||
+        buf[i] >= 'a' && buf[i] <= 'f' ||
+        buf[i] >= 'A' && buf[i] <= 'F') {
+      continue;
+    }
+    printf("Invalid hexadecimal character %c in %s\n", buf[i], buf);
+    return 0;
+  }
+  return 1;
 }
 
 int validate_integer_input() {
@@ -111,10 +143,6 @@ int validate_integer_input() {
 }
 
 void convert_binary() {
-  /* Convert binary to signed an unsigned integers */
-  uint64_t uint = 0;
-  int64_t sint = 0;
-
   /* For every character past the 0b (hence starting at 2) we need to check
    * if the bit is enabled, compute the exponent (2^N) if it is, and accumulate
    * into the final integer value */
@@ -126,7 +154,7 @@ void convert_binary() {
       for (size_t j = 0; j < exp; j++) {
         sum = sum * 2;
       }
-      uint += sum;
+      unsigned_value += sum;
     }
   }
 
@@ -139,8 +167,6 @@ void convert_binary() {
    * and compare them
    * 4 bits == nibbles
    */
-  char hex_str[128];
-  size_t hex_idx = 0;
 
   int nibble_cnt = 1;
   int s = 0;
@@ -151,8 +177,8 @@ void convert_binary() {
     }
     /* Processed 4 bits, need to add the hex character and go to the next 4 bits */
     if (nibble_cnt >= 4) {
-      hex_str[hex_idx] = hex_lookup[s];
-      hex_idx += 1;
+      hex_str[hex_len] = hex_lookup[s];
+      hex_len += 1;
       nibble_cnt = 1;
       s = 0;
     }
@@ -162,17 +188,9 @@ void convert_binary() {
   }
   /* We may have had <4 bits to process so need to handle that corner case */
   if (nibble_cnt > 1) {
-    hex_str[hex_idx] = hex_lookup[s];
-    hex_idx += 1;
+    hex_str[hex_len] = hex_lookup[s];
+    hex_len += 1;
   }
-  printf("Binary %s is:\n", buf);
-  printf("\tDec: %lld\n", uint);
-  printf("\tHex: 0x");
-  for (size_t i = hex_idx - 1; i < hex_idx; i--) {
-    printf("%c", hex_str[i]);
-  }
-  printf("\n");
-  printf("Using printf hex 0x%X\n", uint);
 }
 
 int two_exp(int n) {
@@ -190,4 +208,8 @@ int two_exp(int n) {
     s = s * 2;
   }
   return s;
+}
+
+void convert_hexadecimal() {
+
 }
