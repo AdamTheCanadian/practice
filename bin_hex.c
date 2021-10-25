@@ -167,6 +167,25 @@ void convert_binary() {
    * and compare them
    * 4 bits == nibbles
    */
+  /* We know how many bits there are (the input minus the '0b') */
+  size_t num_bits = buf_len - 2;
+  /* We can determine the number of hex characters (remember each character is 4 bits)
+   * by dividing by 4. However, since integer division will round down (7 / 4 == 1), we will
+   * add 3 to make sure we round to the correct number of characters: For example:
+   * 7 / 4 == 1 but we need at least 2 characters (1 to hold four bits, 1 to hold 3 bits)
+   * so
+   * (7 + 3) / 4 -> 10 / 4 == 2
+   * We do +3 for the case that the input is already a perfect multiple of 4. For example:
+   * If num_bits == 8
+   * (8 + 3) / 4 -> 11 / 4 == 2 which is correct.
+   * If we did + 4 we would get (8 + 4) / 4 which is 12/4 == 3, which is not correct.
+   * We need/want the number of hex characters to put the hex string in correct order
+   * For example:
+   * 0b0001111 == 0x0F in hex, but if we process the last 4 bits (1111) first,
+   * then the front 3 (000) we would get a string of 0xF0
+   */
+  size_t num_hex_chars = (num_bits + 3) / 4;
+  printf("Num hex bytes %d\n", num_hex_chars);
 
   int nibble_cnt = 1;
   int s = 0;
@@ -177,7 +196,10 @@ void convert_binary() {
     }
     /* Processed 4 bits, need to add the hex character and go to the next 4 bits */
     if (nibble_cnt >= 4) {
-      hex_str[hex_len] = hex_lookup[s];
+      /* Remember we want to put the string in reverse order, so if there
+       * are 2 hex characters required (5 to 8 bit input) we want to place the first
+       * character at index 1, then index 0, so we need to minus 1*/
+      hex_str[num_hex_chars - hex_len - 1] = hex_lookup[s];
       hex_len += 1;
       nibble_cnt = 1;
       s = 0;
@@ -188,7 +210,7 @@ void convert_binary() {
   }
   /* We may have had <4 bits to process so need to handle that corner case */
   if (nibble_cnt > 1) {
-    hex_str[hex_len] = hex_lookup[s];
+    hex_str[num_hex_chars - hex_len - 1] = hex_lookup[s];
     hex_len += 1;
   }
 }
