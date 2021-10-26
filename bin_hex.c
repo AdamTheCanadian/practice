@@ -2,6 +2,17 @@
 #include <string.h>
 #include <stdint.h>
 
+/**
+ * @program This program simply takes binary, decimal, or hex input and converts
+ * to the other forms (decimal to binary and hex for example).
+ *
+ * There are obviously easier ways to convert, and smarter implementations but this
+ * is meant for learning and doing it from fundamentals. For example, if you have
+ * a binary to decimal converter. To convert Hex to decimal and binary you could in
+ * theory first convert hex to decimal, and then decimal to binary (and skip hex to binary).
+ * But where is the fun in that.
+ */
+
 /* Buffer for holding input */
 char buf[256];
 size_t buf_len = 0;
