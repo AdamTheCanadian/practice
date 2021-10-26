@@ -233,5 +233,17 @@ int two_exp(int n) {
 }
 
 void convert_hexadecimal() {
+  /* Copy over the hex (input) string, minus the '0x' */
+  hex_len = buf_len - 2;
+  strncpy(hex_str, &buf[2], hex_len);
+  /* To make life easier, convert all hex lower case characters ('a' to 'f') to
+   * the capital form. We can leverage the fact that the hex ascii value for 'a' is 0x61, and
+   * for 'A' is 0x41. So if we have any lower case inputs, we can simply subtract 0x20 to convert
+   * from lowercase to upper case*/
+  for (size_t i = 0; i < hex_len; i++) {
+    if (hex_str[i] >= 'a' && hex_str[i] <= 'f') {
+      hex_str[i] -= 0x20;
+    }
+  }
 
 }
