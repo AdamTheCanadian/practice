@@ -46,8 +46,31 @@ void convert_hexadecimal();
 
 /* calculate 2 ^ n */
 int two_exp(int n);
+/* calculate 16 ^ n */
+int sixteen_exp(int n);
 
 char hex_lookup[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+/* Lookup for the binary equivalent of a hex character. We assume the 'A' to 'F' values
+ * are offset by 0x11 */
+const char* hex_to_bin_lookup[16] = {
+    "0000", //  0
+    "0001", // 1
+    "0010", // 2
+    "0011", // 3
+    "0100", // 4
+    "0101", // 5
+    "0110", // 6
+    "0111", // 7
+    "1000", // 8
+    "1001", // 9
+    "1010", // 10
+    "1011", // 11
+    "1100", // 12
+    "1101", // 13
+    "1110", // 14
+    "1111", // 15
+};
 
 int main(int argc, char* argv []) {
   /*
@@ -256,7 +279,60 @@ void convert_hexadecimal() {
       hex_str[i] -= 0x20;
     }
   }
-  /* The number of bits will be how many hex characters we have times 4 bits*/
- bin_len = hex_len * 4;
+  bin_len = 0;
+  /* There is not really any way to convert hex to binary besides a
+   * simple look up, since hex is literaly a character representation of 4 bits.
+   * So we will use the hex ascii value ('0'-'9', 'A'-'F) as a lookup to its
+   * binary equivalent. We need to offset the '0'-'9' characters by 0x30 (since
+   * they start at value 0x30 and we want them to start at value 0 to be used
+   * as an index), and 'A'-'F' need to be offset by 0x7 so we will artificially have
+   * the characters layed out in this order: 0 1 2 3 4 5 6 7 8 9 A B C D E F*/
+  for (size_t i = 0; i < hex_len; i++) {
+    char val = hex_str[i];
+    /* First subtract the  */
+    val -= 0x30;
+    /* If our value is still greater than 9, we must have started with a 'A'-'F'
+     * character, so need to remove the last 7 to bring it in desired range*/
+    if (val > 0x09) {
+      val -= 0x07;
+    }
+    const char* b = hex_to_bin_lookup[(int)val];
+    for (int j = 0; j < 4; j++) {
+      bin_str[bin_len + j] = b[j];
+    }
+    bin_len += 4;
+  }
 
+  /*
+   * To convert hex to decimal/integer, its pretty easy so just need to take
+   * the numeric representation of each character and times by 16^n and add it up
+   * For example:
+   * 0x3B = 3 * 16^1 + 11 * 16^0 == 59 (where 'B' is hex for 11)
+   */
+  /* We are going to process the hex string in order, which means the first
+   * character in the string is the highest power (n) of 16, which is equivalent
+   * of the total length. Then every other character will be n-1
+   * We start with a -1 since the last exponent is 0, not 1. So if there are 3 hex
+   * characters we will have exponents 2/1/0 (not 3/2/1)*/
+  int n = (int)hex_len - 1;
+  unsigned_value = 0;
+  for (size_t i = 0; i < hex_len; i++) {
+    /* Convert the ascii hex value to its integer representation by leveraging the
+     * fact we know '0' to '9' starts at actual hex value 0x30 and 'A'-'9' starts at 0x41 */
+    int int_val = (int)hex_str[i];
+    int_val -= 0x30;
+    if (int_val > 0x09) {
+      int_val -= 0x07;
+    }
+    unsigned_value += (int_val * sixteen_exp(n));
+    n -= 1;
+  }
+}
+
+int sixteen_exp(int n) {
+  int s = 1;
+  for (int i = 0; i < n; i++) {
+    s = s * 16;
+  }
+  return s;
 }
