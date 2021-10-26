@@ -14,14 +14,14 @@
  */
 
 /* Buffer for holding input */
-char buf[256];
+char buf[256] = {'\0'};
 size_t buf_len = 0;
 
-char hex_str[256];
+char hex_str[256] = {'\0'};
 size_t hex_len = 0;
 
 /* Binary strings take up more space (8 characters extra) so make sure to account for that */
-char bin_str[256 * 8];
+char bin_str[256 * 8] = {'\0'};
 size_t bin_len = 0;
 
 uint64_t unsigned_value = 0;
@@ -256,5 +256,7 @@ void convert_hexadecimal() {
       hex_str[i] -= 0x20;
     }
   }
+  /* The number of bits will be how many hex characters we have times 4 bits*/
+ bin_len = hex_len * 4;
 
 }
