@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 /**
  * @program This program simply takes binary, decimal, or hex input and converts
@@ -43,6 +44,7 @@ int validate_integer_input();
 
 void convert_binary();
 void convert_hexadecimal();
+void convert_integer();
 
 /* calculate 2 ^ n */
 int two_exp(int n);
@@ -110,6 +112,7 @@ int main(int argc, char* argv []) {
     if (validate_integer_input() == 0) {
       return 1;
     }
+    convert_integer();
   }
   else {
     return 0;
@@ -173,7 +176,13 @@ int validate_hexadecimal_input() {
 }
 
 int validate_integer_input() {
-
+  for (size_t i = 0; i < buf_len; i++) {
+    if (buf[i] < '0' || buf[i] > '9') {
+      printf("Invalid numeric character %c in input %s\n", buf[i], buf);
+      return 0;
+    }
+  }
+  return 1;
 }
 
 void convert_binary() {
@@ -335,4 +344,22 @@ int sixteen_exp(int n) {
     s = s * 16;
   }
   return s;
+}
+
+void convert_integer() {
+  /* Convert string to integer value, our starting/input value */
+  unsigned_value = strtoull(buf, NULL, 10);
+
+  /*
+   * Convert to hex first. Just keep dividing by 16 until no remainder
+   * is left. This however prints the hex string in reverse order.
+   */
+  uint64_t tmp_val = unsigned_value;
+  while (tmp_val != 0) {
+    uint64_t div = tmp_val / 16;
+    uint64_t rem = tmp_val - (div * 16);
+    hex_str[hex_len] = hex_lookup[rem];
+    hex_len += 1;
+    tmp_val = div;
+  }
 }
