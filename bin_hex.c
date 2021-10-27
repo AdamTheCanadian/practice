@@ -352,14 +352,29 @@ void convert_integer() {
 
   /*
    * Convert to hex first. Just keep dividing by 16 until no remainder
-   * is left. This however prints the hex string in reverse order.
+   * is left. This however prints the hex string in reverse order. So
+   * going to store the answer in a temporary and then flip it
    */
   uint64_t tmp_val = unsigned_value;
+  char tmp_hex_str[256] = {'\0'};
+  size_t tmp_hex_len = 0;;
+  /* In the case the input is 0 */
+  tmp_hex_str[tmp_hex_len] = '0';
+
   while (tmp_val != 0) {
     uint64_t div = tmp_val / 16;
     uint64_t rem = tmp_val - (div * 16);
-    hex_str[hex_len] = hex_lookup[rem];
-    hex_len += 1;
+    tmp_hex_str[tmp_hex_len] = hex_lookup[rem];
+    tmp_hex_len += 1;
     tmp_val = div;
   }
+  if (tmp_hex_len == 0) {
+    tmp_hex_len += 1;
+  }
+
+  for (size_t i = 0; i < tmp_hex_len; i++) {
+    hex_str[i] = tmp_hex_str[tmp_hex_len - i - 1];
+  }
+  hex_len = tmp_hex_len;
+
 }
