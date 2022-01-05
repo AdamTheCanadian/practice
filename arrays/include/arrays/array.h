@@ -9,6 +9,8 @@ void Array2D_Print(int* arr, int rows, int cols, const char* prefix);
  * \param rows number of rows in the array
  * \param cols number of cols in the array
  */
-void Array2D_AverageCols(int* arr, int rows, int cols);
+double Array2D_AverageCol(int* arr, int rows, int cols, int colNum);
+
+double Array2D_AverageRow(int* arr, int rows, int cols, int rowNum);
 
 #endif

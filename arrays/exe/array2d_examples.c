@@ -18,7 +18,16 @@ void Exercise_3_1() {
   }
 
   Array2D_Print(marks, 20, 5, "Students");
-  Array2D_AverageCols(marks, 20, 5);
+  for (int i = 0; i < num_classes; i++) {
+    printf("Average for class %d: %.3f\n", i,
+           Array2D_AverageCol(marks, num_students, num_classes, i));
+  }
+
+  for (int i = 0; i < num_students; i++) {
+    printf("Average for student %d: %.3f\n", i,
+           Array2D_AverageRow(marks, num_students, num_classes, i));
+  }
+
 }
 
 

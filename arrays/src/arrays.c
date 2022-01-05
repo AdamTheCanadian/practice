@@ -13,13 +13,20 @@ void Array2D_Print(int* arr, int rows, int cols, const char* prefix) {
   }
 }
 
-void Array2D_AverageCols(int* arr, int rows, int cols) {
-  for (int j = 0; j < cols; j++) {
-    double sum = 0;
-    for (int i = 0; i < rows; i++) {
-      sum += arr[i* cols + j];
-    }
-    sum /= rows;
-    printf("Average of Column [%d]: %.3f\n", j, sum);
+double Array2D_AverageCol(int* arr, int rows, int cols, int colNum) {
+  double sum = 0.0;
+  for (int i = 0; i < rows; i++) {
+    sum += arr[i* cols + colNum];
   }
+  sum /= rows;
+  return sum;
+}
+
+double Array2D_AverageRow(int* arr, int rows, int cols, int rowNum) {
+  double sum = 0.0;
+  for (int i = 0; i < cols; i++) {
+    sum += arr[rowNum * cols + i];
+  }
+  sum /= cols;
+  return sum;
 }
