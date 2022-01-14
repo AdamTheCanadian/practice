@@ -50,8 +50,31 @@ void Exercise_3_2() {
   }
 
 }
+
+void Exercise_3_3() {
+  /* Swap the 2nd last element with the 2nd element */
+  /* Given an array of 100 integers, find pairs that sum to 50 */
+  static const int n = 100;
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    /* Keep elements between 0 and 50 */
+    arr[i] = rand() % 50;
+  }
+
+  printf("Element [1] before swap %d\n", arr[1]);
+  printf("Element [98] before swap %d\n", arr[98]);
+
+  int tmp = arr[1];
+  arr[1] = arr[98];
+  arr[98] = tmp;
+
+  printf("Element [1] after swap %d\n", arr[1]);
+  printf("Element [98] after swap %d\n", arr[98]);
+}
+
 int main() {
   /* Sample problems taken from "Data Structures in C - Chapter 3*/
   Exercise_3_1();
   Exercise_3_2();
+  Exercise_3_3();
 }
