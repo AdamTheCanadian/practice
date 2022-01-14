@@ -5,4 +5,6 @@ set(CMAKE_C_STANDARD 99)
 
 add_executable(bin_hex bin_hex.c)
 
+add_executable(casting casting.c)
+
 add_subdirectory(arrays)
