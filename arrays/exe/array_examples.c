@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Exercises from Data Structures in C, chapter 3 */
+
 void Exercise_3_1() {
   static const int num_students = 20;
   static const int num_classes = 5;
@@ -72,9 +74,23 @@ void Exercise_3_3() {
   printf("Element [98] after swap %d\n", arr[98]);
 }
 
+void Exercise_4() {
+  /* Sum of squares */
+  static const int n = 100;
+  int arr[n];
+  for (int i = 0; i < n; i++) {
+    arr[i] = rand() % 100;
+  }
+
+  for (int i = 0; i < n; i++) {
+    printf("Arr[%d] == %5d, squared == %5d\n", i, arr[i], arr[i] * arr[i]);
+  }
+}
+
 int main() {
   /* Sample problems taken from "Data Structures in C - Chapter 3*/
   Exercise_3_1();
   Exercise_3_2();
   Exercise_3_3();
+  Exercise_4();
 }
