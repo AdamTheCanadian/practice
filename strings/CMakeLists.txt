@@ -1,0 +1,2 @@
+
+add_executable(concatenate_two_strings concatenate_two_strings.c)
