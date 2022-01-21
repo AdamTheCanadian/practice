@@ -3,6 +3,7 @@
  * Remove leading and trailing white space from a string
  */
 #include <stdio.h>
+#include <string.h>
 
 void string_left_trim(char* s, size_t n) {
   /* If the first character is not whitespace we are done */
@@ -26,9 +27,28 @@ void string_left_trim(char* s, size_t n) {
   }
 }
 
+void string_right_trim(char* s, size_t n) {
+  size_t idx = n - 1;
+  /* If the last character is not whitespace we are done */
+  if (s[idx] != ' ') {
+    return;
+  }
+  /* Count the white space, keep iterating until we hit a non whitespace character */
+  while (idx != 0) {
+    if (s[idx] != ' ') {
+      break;
+    }
+    idx -= 1;
+  }
+  /* Place null terminator at the end */
+  s[idx+1] = '\0';
+}
+
 int main() {
   char s[] = "  Hello World  ";
   printf("S %d\n", sizeof(s));
-  string_left_trim(s, 15);
-  printf("Left trim: \n%s\n", s);
+  string_left_trim(s, strlen(s));
+  printf("Left trim: -%s-\n", s);
+  string_right_trim(s, strlen(s));
+  printf("Right trim: -%s-\n", s);
 }
