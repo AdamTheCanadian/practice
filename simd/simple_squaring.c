@@ -10,7 +10,9 @@ void mul4_scalar(float* ptr) {
 
 /* Vectorized version of squaring a number */
 void mul4_vectorized(float* ptr) {
-  __m128 f = _mm_loadu_ps( ptr ); f = _mm_mul_ps( f, f ); _mm_storeu_ps( ptr, f );
+  __m128 f = _mm_loadu_ps( ptr );
+  f = _mm_mul_ps( f, f );
+  _mm_storeu_ps( ptr, f );
 }
 
 int main() {
