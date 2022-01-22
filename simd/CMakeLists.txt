@@ -1,0 +1,1 @@
+add_executable(simple_squaring simple_squaring.c)
