@@ -1,0 +1,1 @@
+add_executable(pointer_increment pointer_increment.c)

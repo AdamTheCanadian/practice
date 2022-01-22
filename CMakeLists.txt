@@ -9,3 +9,4 @@ add_executable(casting casting.c)
 
 add_subdirectory(arrays)
 add_subdirectory(strings)
+add_subdirectory(pointers)
